@@ -13,7 +13,8 @@ interface Message {
 const messages = ref<Message[]>([])
 const newMessage = ref({
   user: '',
-  content: ''
+  content: '',
+  is_private: false
 })
 const loading = ref(false)
 const error = ref('')
@@ -62,7 +63,8 @@ const sendMessage = async () => {
       },
       body: JSON.stringify({
         user: newMessage.value.user.trim(),
-        content: newMessage.value.content.trim()
+        content: newMessage.value.content.trim(),
+        is_visible: !newMessage.value.is_private
       })
     })
     
@@ -100,8 +102,8 @@ onMounted(() => {
 <template>
   <div class="message-app">
     <header class="header">
-      <h1>💬 留言板</h1>
-      <p>分享你的想法，查看大家的留言</p>
+      <h1>Welcome!</h1>
+      <p>💬 ZYPの留言箱 💬</p>
     </header>
 
     <!-- 错误提示 -->
@@ -132,6 +134,18 @@ onMounted(() => {
           rows="4"
           :disabled="loading"
         ></textarea>
+      </div>
+      
+      <div class="form-group checkbox-group">
+        <label class="checkbox-label">
+          <input 
+            type="checkbox" 
+            v-model="newMessage.is_private"
+            :disabled="loading"
+          />
+          <span class="checkbox-text">设为不公开，仅开发者可见</span>
+        </label>
+        <small class="help-text">勾选后，此留言将不会在公开列表中显示</small>
       </div>
       
       <button 
@@ -276,6 +290,36 @@ onMounted(() => {
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+.checkbox-group {
+  margin-bottom: 20px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: auto;
+  margin-right: 10px;
+  transform: scale(1.2);
+}
+
+.checkbox-text {
+  font-weight: 500;
+  color: #2d3436;
+}
+
+.help-text {
+  display: block;
+  margin-top: 5px;
+  color: #636e72;
+  font-size: 14px;
+  font-style: italic;
 }
 
 .messages-section {
