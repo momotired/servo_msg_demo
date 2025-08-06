@@ -6,6 +6,18 @@ const mysql = require('mysql2');
 // 解析请求体中的 JSON 数据
 app.use(express.json());
 
+// 添加CORS支持，允许前端访问
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
 // 步骤1：先用无database连接，创建数据库
 const poolNoDb = mysql.createPool({
   host: '212.129.244.183',
